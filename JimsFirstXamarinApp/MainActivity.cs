@@ -5,6 +5,9 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using Microsoft.Azure.Mobile;
+using Microsoft.Azure.Mobile.Analytics;
+using Microsoft.Azure.Mobile.Crashes;
 
 namespace JimsFirstXamarinApp
 {
@@ -15,6 +18,8 @@ namespace JimsFirstXamarinApp
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
+
+            MobileCenter.Start("17a65326-7fba-4b65-b22f-871c2a2af9d7", typeof(Analytics), typeof(Crashes));
 
             // Set our view from the "main" layout resource
             SetContentView (Resource.Layout.Main);
