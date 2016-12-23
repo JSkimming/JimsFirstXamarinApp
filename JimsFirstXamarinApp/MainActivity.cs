@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Android.App;
 using Android.Content;
 using Android.Runtime;
@@ -15,6 +16,8 @@ namespace JimsFirstXamarinApp
     [Activity(Label = "Jims First", MainLauncher = true)]
     public class MainActivity : Activity
     {
+        static readonly List<string> phoneNumbers = new List<string>();
+
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
@@ -28,6 +31,7 @@ namespace JimsFirstXamarinApp
             EditText phoneNumberText = FindViewById<EditText>(Resource.Id.PhoneNumberText);
             Button translateButton = FindViewById<Button>(Resource.Id.TranslateButton);
             Button callButton = FindViewById<Button>(Resource.Id.CallButton);
+            Button callHistoryButton = FindViewById<Button>(Resource.Id.CallHistoryButton);
 
             // Disable the "Call" button
             callButton.Enabled = false;
@@ -57,6 +61,10 @@ namespace JimsFirstXamarinApp
                 var callDialog = new AlertDialog.Builder(this);
                 callDialog.SetMessage("Call " + translatedNumber + "?");
                 callDialog.SetNeutralButton("Call", delegate {
+                    // add dialed number to list of called numbers.
+                    phoneNumbers.Add(translatedNumber);
+                    // enable the Call History button
+                    callHistoryButton.Enabled = true;
                     // Create intent to dial phone
                     var callIntent = new Intent(Intent.ActionCall);
                     callIntent.SetData(Android.Net.Uri.Parse("tel:" + translatedNumber));
@@ -66,6 +74,13 @@ namespace JimsFirstXamarinApp
 
                 // Show the alert dialog to the user and wait for response.
                 callDialog.Show();
+            };
+
+            callHistoryButton.Click += (sender, e) =>
+            {
+                var intent = new Intent(this, typeof(CallHistoryActivity));
+                intent.PutStringArrayListExtra("phone_numbers", phoneNumbers);
+                StartActivity(intent);
             };
         }
     }
